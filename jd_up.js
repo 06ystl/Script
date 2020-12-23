@@ -56,9 +56,7 @@ let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
       })
 
 function doGet() {
-  console.log(jdfactorycode);
-  console.log(JSON.stringify(suburl("ddfactory",String(jdfactorycode))));
-  /*if(jdfactorycode){
+  if(jdfactorycode){
     return new Promise(resolve => {
       try{
         $.get(suburl("ddfactory",String(jdfactorycode)), async (err, resp, data) => {
@@ -86,11 +84,11 @@ function doGet() {
     })
   }else{
     console.log(`东东工厂助力码为空,提交失败`);
-  }*/
+  }
 }
 function suburl(functionId,code) {
   return {
-    url: `http://api.turinglabs.net/api/v1/jd/${functionId}/create/${code}}`,
+    url: `http://api.turinglabs.net/api/v1/jd/${functionId}/create/${code}/`
   }
 }
 
