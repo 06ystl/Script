@@ -57,8 +57,8 @@ let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
 
 function doGet() {
   console.log(jdfactorycode);
-  console.log(suburl("ddfactory",String(jdfactorycode)));
-  if(jdfactorycode){
+  console.log(JSON.stringify(suburl("ddfactory",String(jdfactorycode))));
+  /*if(jdfactorycode){
     return new Promise(resolve => {
       try{
         $.get(suburl("ddfactory",String(jdfactorycode)), async (err, resp, data) => {
@@ -80,11 +80,13 @@ function doGet() {
         })
        } catch(e){
         $.logErr(e, resp)
+       }finally{
+         resolve();
        }
     })
   }else{
     console.log(`东东工厂助力码为空,提交失败`);
-  }
+  }*/
 }
 function suburl(functionId,code) {
   return {
