@@ -9,7 +9,7 @@ const JX_API_HOST = 'https://m.jingxi.com';
 let jdfactorycode ,jxfactorycode, petcode,furitcode,beancode,zzcode ;
 let codeArr = [];
 let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
-
+const nameArr = ["京东赚赚","东东工厂","京喜工厂","种豆得豆","东东农场","东东萌宠"]
 !(async () => {
     await requireConfig();
     if (!cookiesArr[0]) {
@@ -38,13 +38,13 @@ let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
         message = '';
         subTitle = '';
         option = {};
-        //await jdzz();//京东赚赚
+        await jdzz();//京东赚赚
         await jdfactory();//东东工厂
-        //await jxfactory();//京喜工厂
-       // await jdPlantBean();//种豆得豆
-        //await jdFruit();//东东农场
-        //await jdPet();//萌宠
-        await readShareCode();
+        await jxfactory();//京喜工厂
+        await jdPlantBean();//种豆得豆
+        await jdFruit();//东东农场
+        await jdPet();//萌宠
+        await subCode();
       }
     }
   })()
@@ -54,32 +54,39 @@ let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
       .finally(() => {
         $.done();
       })
-      async function readShareCode() {
-        return new Promise(async resolve => {
-          $.get({url: `http://api.turinglabs.net/api/v1/jd/ddfactory/create/${jdfactorycode}/`}, (err, resp, data) => {
-            try {
-              if (err) {
-                console.log(`${JSON.stringify(err)}`)
-                console.log(`${$.name} API请求失败，请检查网路重试`)
-              } else {
-                if (data) {                  
-                  data = JSON.parse(data);
-                  if(data.code = 200) {
-                    console.log(`东东工厂助力码提交成功`);
-                  }else{
-                    console.log(`东东工厂助力发提交失败  ${data}`);
+      async function subCode() {
+        for(let i = 0 ; i < codeArr.length; i++) {
+          if(codeArr[i] === 0 ) {
+            console.log(`${nameArr[i]} 助力码无法获取`);
+            continue;
+          }
+          return new Promise(async resolve => {
+            $.get({url: `http://api.turinglabs.net/api/v1/jd/${urlArr[i]}/create/${codeArr[i]}/`}, (err, resp, data) => {
+              try {
+                if (err) {
+                  console.log(`${JSON.stringify(err)}`)
+                  console.log(`助力码服务器 API请求失败，请检查网路重试`)
+                } else {
+                  if (data) {                  
+                    data = JSON.parse(data);
+                    if(data.code = 200) {
+                      console.log(`${nameArr[i]}助力码提交成功  ${data}`);
+                    }else{
+                      console.log(`${nameArr[i]}助力发提交失败  ${data}`);
+                    }
                   }
                 }
+              } catch (e) {
+                $.logErr(e, resp)
+              } finally {
+                resolve(data);
               }
-            } catch (e) {
-              $.logErr(e, resp)
-            } finally {
-              resolve(data);
-            }
+            })
+            await $.wait(5000);
+            resolve()
           })
-          await $.wait(5000);
-          resolve()
-        })
+        }
+        
       }
 /*function doGet() {
   if(jdfactorycode){
