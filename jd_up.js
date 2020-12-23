@@ -7,7 +7,7 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
 const JX_API_HOST = 'https://m.jingxi.com';
 
 let codeArr = [`0`,`0`,`0`,`0`,`0`];
-let urlArr = [`jdzz`,`ddfactory`,`jxfactory`,`bean`,`farm`,`pet`];
+const urlArr = [`jdzz`,`ddfactory`,`jxfactory`,`bean`,`farm`,`pet`];
 const nameArr = [`京东赚赚`,`东东工厂`,`京喜工厂`,`种豆得豆`,`东东农场`,`东东萌宠`]
 
 !(async () => {
@@ -57,6 +57,7 @@ const nameArr = [`京东赚赚`,`东东工厂`,`京喜工厂`,`种豆得豆`,`�
           }
           console.log(`\n[ ${nameArr[i]} ] 互助码: ${codeArr[i]}\n`)
         }
+
         for(let i = 0; i < codeArr.length; i++) {
           if (codeArr[i] === `0`){
             continue
@@ -87,8 +88,8 @@ const nameArr = [`京东赚赚`,`东东工厂`,`京喜工厂`,`种豆得豆`,`�
                   if (data) {                  
                     data = JSON.parse(data);
                     if(data.code = 200) {
-                      console.log(`${nameArr[i]}助力码提交成功 ${JSON.stringify(data)}`);
-                      message += `${nameArr[i]}助力码提交成功`
+                      console.log(`${nameArr[i]}助力码提交成功 ${data.message}`);
+                      message += `${nameArr[i]}助力码提交成功 ${data.message}\n`
                     }else{
                       console.log(`${nameArr[i]}助力码提交失败 ${JSON.stringify(data)}`);
                     }
