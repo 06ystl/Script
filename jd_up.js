@@ -6,10 +6,10 @@ let cookiesArr = [], cookie = '', notify;
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 const JX_API_HOST = 'https://m.jingxi.com';
 
-let jdfactorycode ,jxfactorycode, petcode,furitcode,beancode,zzcode ;
-let codeArr = [0,0,0,0,0];
-let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
-const nameArr = ["京东赚赚","东东工厂","京喜工厂","种豆得豆","东东农场","东东萌宠"]
+let codeArr = [`0`,`0`,`0`,`0`,`0`];
+let urlArr = [`jdzz`,`ddfactory`,`jxfactory`,`bean`,`farm`,`pet`];
+const nameArr = [`京东赚赚`,`东东工厂`,`京喜工厂`,`种豆得豆`,`东东农场`,`东东萌宠`]
+
 !(async () => {
     await requireConfig();
     if (!cookiesArr[0]) {
@@ -44,8 +44,17 @@ const nameArr = ["京东赚赚","东东工厂","京喜工厂","种豆得豆","�
         await jdPlantBean();//种豆得豆
         await jdFruit();//东东农场
         await jdPet();//萌宠
-        $.wait(5000);
-        await subCode();
+
+        for(let i = 0; i < codeArr.length; i++) {
+          console.log(`${codeArr[i]}\n`)
+        }
+        for(let i = 0; i < codeArr.length; i++) {
+          if (codeArr[i] === `0`){
+            console.log(`${nameArr[i]}获取助力码失败`);
+            continue
+          }
+          await subCode(i,urlArr[i],codeArr[i]);
+        }
       }
     }
   })()
@@ -55,39 +64,34 @@ const nameArr = ["京东赚赚","东东工厂","京喜工厂","种豆得豆","�
       .finally(() => {
         $.done();
       })
-      async function subCode() {
-        for(let i = 0 ; i < codeArr.length; i++) {
-          if(codeArr[i] === 0 ) {
-            console.log(`${nameArr[i]} 助力码无法获取`);
-            continue;
-          }else {
-            new Promise(async resolve => {
-              $.get({url: `http://api.turinglabs.net/api/v1/jd/${urlArr[i]}/create/${codeArr[i]}/`}, (err, resp, data) => {
-                try {
-                  if (err) {
-                    console.log(`${JSON.stringify(err)}`)
-                    console.log(`助力码服务器 API请求失败，请检查网路重试`)
-                  } else {
-                    if (data) {                  
-                      data = JSON.parse(data);
-                      if(data.code = 200) {
-                        console.log(`${nameArr[i]}助力码提交成功  ${data}`);
-                      }else{
-                        console.log(`${nameArr[i]}助力发提交失败  ${data}`);
-                      }
+      async function subCode(i,url,code) {
+          return new Promise(async resolve => {
+            $.get({url: `http://api.turinglabs.net/api/v1/jd/${url}/create/${code}/`}, (err, resp, data) => {
+              try {
+                if (err) {
+                  console.log(`${JSON.stringify(err)}`)
+                  console.log(`助力码服务器 API请求失败，请检查网路重试`)
+                } else {
+                  if (data) {                  
+                    data = JSON.parse(data);
+                    if(data.code = 200) {
+                      console.log(`${nameArr[i]}助力码提交成功  ${data}`);
+                    }else{
+                      console.log(`${nameArr[i]}助力发提交失败  ${data}`);
                     }
                   }
-                } catch (e) {
-                  $.logErr(e, resp)
-                } finally {
-                  resolve(data);
                 }
-              })
-              await $.wait(5000);
-              resolve()
+              } catch (e) {
+                $.logErr(e, resp)
+              } finally {
+                resolve(data);
+              }
             })
-          }
-        }
+            await $.wait(5000);
+            resolve()
+          })
+        
+        
       }
 /*function doGet() {
   if(jdfactorycode){
@@ -132,11 +136,9 @@ function suburl(functionId,code) {
                     $.taskVos.map(item => {
                       if (item.taskType === 14) {
                         console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的东东工厂好友互助码】${item.assistTaskDetailVo.taskToken}\n`)
-                        jdfactorycode = item.assistTaskDetailVo.taskToken;
-                        console.log(jdfactorycode);
-                        codeArr[1] = jdfactorycode;
+                        codeArr[1] = `${item.assistTaskDetailVo.taskToken}`;
                       }else {
-                        codeArr[1] = 0;
+                        console.log(`东东工厂获取互助码失败`);
                       }
                     })
                   }
@@ -173,11 +175,9 @@ function suburl(functionId,code) {
           // option['media-url'] = $.farmInfo.farmUserPro.goodsImage;
          
           console.log(`\n【您的东东农场互助码shareCode】 ${$.farmInfo.farmUserPro.shareCode}\n`);
-          furitcode = $.farmInfo.farmUserPro.shareCode;
-          console.log(furitcode);
-          codeArr[4] = $.farmInfo.farmUserPro.shareCode;
+
+          codeArr[4] = `${$.farmInfo.farmUserPro.shareCode}`;
         } else {
-          codeArr[4] = 0;
           console.log(`初始化农场数据异常, 请登录京东 app查看农场0元水果功能是否正常,农场初始化数据: ${JSON.stringify($.farmInfo)}`);
           message = `【京东账号${$.index}】 ${$.nickName || $.UserName}\n【数据异常】请手动登录京东app查看此账号东东农场是否正常`;
         }
@@ -189,13 +189,10 @@ function suburl(functionId,code) {
         if ($.plantBeanIndexResult.code === '0') {
           const shareUrl = $.plantBeanIndexResult.data.jwordShareInfo.shareUrl
           $.myPlantUuid = getParam(shareUrl, 'plantUuid')
-          beancode = $.myPlantUuid;
           console.log(`\n【您的种豆得豆互助码】 ${$.myPlantUuid}\n`);
-          console.log(beancode);
-          codeArr[3] = $.myPlantUuid;
+          codeArr[3] =`${$.myPlantUuid}`;
 
         } else {
-          codeArr[3] =0;
           console.log(`种豆得豆-初始失败:  ${JSON.stringify($.plantBeanIndexResult)}`);
         }
       }
@@ -261,12 +258,11 @@ function suburl(functionId,code) {
                     data = data['data'];
                     if (data.factoryList && data.productionList) {
                       console.log(`\n【京喜工厂互助码】${data.user.encryptPin}`);
-                      jxfactorycode = data.user.encryptPin;
-                      console.log(jxfactorycode);
-                      codeArr[2] = jxfactorycode;
+                    
+                      codeArr[2] = `${data.user.encryptPin}`;
                     } 
                   } else {
-                    codeArr[2] = 0;
+                    
                     console.log(`GetUserInfo异常：${JSON.stringify(data)}`)
                   }
                 }
@@ -306,11 +302,8 @@ function suburl(functionId,code) {
                   data = JSON.parse(data);
                   if (data.data.shareTaskRes) {
                     console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的京东赚赚好友互助码】${data.data.shareTaskRes.itemId}\n`);
-                    zzcode = data.data.shareTaskRes.itemId;
-                    codeArr[0] = zzcode;
-                    console.log(data.data.shareTaskRes.itemId);
+                    codeArr[0] =`${data.data.shareTaskRes.itemId}`;
                   } else {
-                    codeArr[0] = 0;
                     console.log(`已满5人助力,暂时看不到您的京东赚赚好友助力码`)
                   }
                 }
@@ -349,12 +342,10 @@ async function jdPet() {
       return
     }
     console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的萌宠好友互助码】${$.petInfo.shareCode}\n`);
-    petcode = $.petInfo.shareCode;
-    console.log(petcode);
-    codeArr[5] = $.petInfo.shareCode;
+
+    codeArr[5] =`${$.petInfo.shareCode}`;
 
   } else {
-    codeArr[5] = 0;
     console.log(`初始化萌宠失败:  ${initPetTownRes.message}`);
   }
   async function petrequest(function_id, body = {}) {
