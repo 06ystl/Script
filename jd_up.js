@@ -24,7 +24,7 @@ const JX_API_HOST = 'https://m.jingxi.com';
           $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/`, {"open-url": "https://bean.m.jd.com/"});
   
           if ($.isNode()) {
-            await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+            await notify.sendNotify(`cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
           } else {
             $.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。$.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。
           }
@@ -34,33 +34,33 @@ const JX_API_HOST = 'https://m.jingxi.com';
         subTitle = '';
         option = {};
 
-        await jdFruit();
+        await jdFruit();//东东农场
 
-        await userInfo();
+        await jxfactory();//京喜工厂
 
-        await getzzUserInfo();
+        await jdzz();//京东赚赚
 
-        await jdPet();
+        await jdPet();//萌宠
 
-        await jdPlantBean();
+        await jdPlantBean();//种豆得豆
 
-        await jdfactory_getTaskDetail();
+        await jdfactory();//东东工厂
       }
     }
   })()
       .catch((e) => {
-        $.log('', `❌ ${$.name}, 失败! 原因: ${e}!`, '')
+        $.log('', `❌ }, 失败! 原因: ${e}!`, '')
       })
       .finally(() => {
         $.done();
       })
-      function jdfactory_getTaskDetail() {
+      function jdfactory() {
         return new Promise(resolve => {
           $.post(taskPostUrl("jdfactory_getTaskDetail", {}, "jdfactory_getTaskDetail"), async (err, resp, data) => {
             try {
               if (err) {
                 console.log(`${JSON.stringify(err)}`)
-                console.log(`${$.name} API请求失败，请检查网路重试`)
+                console.log(`东东工厂 API请求失败，请检查网路重试`)
               } else {
                 if (safeGet(data)) {
                   data = JSON.parse(data);
@@ -68,7 +68,7 @@ const JX_API_HOST = 'https://m.jingxi.com';
                     $.taskVos = data.data.result.taskVos;//任务列表
                     $.taskVos.map(item => {
                       if (item.taskType === 14) {
-                        console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的${$.name}东东工厂好友互助码】${item.assistTaskDetailVo.taskToken}\n`)
+                        console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的东东工厂好友互助码】${item.assistTaskDetailVo.taskToken}\n`)
                       }
                     })
                   }
@@ -104,10 +104,10 @@ const JX_API_HOST = 'https://m.jingxi.com';
         if ($.farmInfo.farmUserPro) {
           // option['media-url'] = $.farmInfo.farmUserPro.goodsImage;
          
-          console.log(`\n【您的东东农场${$.name}互助码shareCode】 ${$.farmInfo.farmUserPro.shareCode}\n`);
+          console.log(`\n【您的东东农场互助码shareCode】 ${$.farmInfo.farmUserPro.shareCode}\n`);
         } else {
           console.log(`初始化农场数据异常, 请登录京东 app查看农场0元水果功能是否正常,农场初始化数据: ${JSON.stringify($.farmInfo)}`);
-          message = `【京东账号${$.index}】 ${$.nickName || $.UserName}\n【数据异常】请手动登录京东app查看此账号${$.name}是否正常`;
+          message = `【京东账号${$.index}】 ${$.nickName || $.UserName}\n【数据异常】请手动登录京东app查看此账号东东农场是否正常`;
         }
       }
 
@@ -117,11 +117,17 @@ const JX_API_HOST = 'https://m.jingxi.com';
         if ($.plantBeanIndexResult.code === '0') {
           const shareUrl = $.plantBeanIndexResult.data.jwordShareInfo.shareUrl
           $.myPlantUuid = getParam(shareUrl, 'plantUuid')
-          console.log(`\n【您的${$.name}种豆得豆互助码】 ${$.myPlantUuid}\n`);
+          console.log(`\n【您的种豆得豆互助码】 ${$.myPlantUuid}\n`);
 
         } else {
           console.log(`种豆得豆-初始失败:  ${JSON.stringify($.plantBeanIndexResult)}`);
         }
+      }
+      function getParam(url, name) {
+        const reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i")
+        const r = url.match(reg)
+        if (r != null) return unescape(r[2]);
+        return null;
       }
       async function plantBeanIndex() {
         $.plantBeanIndexResult = await beanrequest('plantBeanIndex');//plantBeanIndexBody
@@ -165,20 +171,20 @@ const JX_API_HOST = 'https://m.jingxi.com';
           }
         }
       }
-      function userInfo() {
+      function jxfactory() {
         return new Promise(async resolve => {
           $.get(dreamfactorytaskurl('userinfo/GetUserInfo', `pin=&sharePin=&shareType=&materialTuanPin=&materialTuanId=`), async (err, resp, data) => {
             try {
               if (err) {
                 console.log(`${JSON.stringify(err)}`)
-                console.log(`${$.name} API请求失败，请检查网路重试`)
+                console.log(`京喜工厂 API请求失败，请检查网路重试`)
               } else {
                 if (safeGet(data)) {
                   data = JSON.parse(data);
                   if (data['ret'] === 0) {
                     data = data['data'];
                     if (data.factoryList && data.productionList) {
-                      console.log(`\n【京东工厂互助码】${data.user.encryptPin}`);
+                      console.log(`\n【京喜工厂互助码】${data.user.encryptPin}`);
                     } 
                   } else {
                     console.log(`GetUserInfo异常：${JSON.stringify(data)}`)
@@ -208,20 +214,20 @@ const JX_API_HOST = 'https://m.jingxi.com';
           }
         }
       }
-      function getzzUserInfo() {
+      function jdzz() {
         return new Promise(resolve => {
           $.get(zztaskUrl("interactIndex"), async (err, resp, data) => {
             try {
               if (err) {
                 console.log(`${JSON.stringify(err)}`)
-                console.log(`${$.name} API请求失败，请检查网路重试`)
+                console.log(`京东赚赚 API请求失败，请检查网路重试`)
               } else {
                 if (safeGet(data)) {
                   data = JSON.parse(data);
                   if (data.data.shareTaskRes) {
                     console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的京东赚赚好友互助码】${data.data.shareTaskRes.itemId}\n`);
                   } else {
-                    console.log(`已满5人助力,暂时看不到您的${$.name}好友助力码`)
+                    console.log(`已满5人助力,暂时看不到您的京东赚赚好友助力码`)
                   }
                 }
               }
@@ -258,7 +264,7 @@ async function jdPet() {
       $.msg($.name, '', `【提示】京东账号${$.index}${$.nickName}\n萌宠活动未开启\n请手动去京东APP开启活动\n入口：我的->游戏与互动->查看更多开启`, { "open-url": "openapp.jdmoble://" });
       return
     }
-    console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的${$.name}好友互助码】${$.petInfo.shareCode}\n`);
+    console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的萌宠好友互助码】${$.petInfo.shareCode}\n`);
 
 
   } else if (initPetTownRes.code === '0'){
@@ -359,7 +365,7 @@ async function jdPet() {
             try {
               if (err) {
                 console.log(`${JSON.stringify(err)}`)
-                console.log(`${$.name} API请求失败，请检查网路重试`)
+                console.log(`API请求失败，请检查网路重试`)
               } else {
                 if (data) {
                   data = JSON.parse(data);
