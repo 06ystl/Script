@@ -38,12 +38,12 @@ let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
         message = '';
         subTitle = '';
         option = {};
-        await jdzz();//京东赚赚
+        //await jdzz();//京东赚赚
         await jdfactory();//东东工厂
-        await jxfactory();//京喜工厂
-        await jdPlantBean();//种豆得豆
-        await jdFruit();//东东农场
-        await jdPet();//萌宠
+        //await jxfactory();//京喜工厂
+       // await jdPlantBean();//种豆得豆
+        //await jdFruit();//东东农场
+        //await jdPet();//萌宠
         await doGet();
       }
     }
@@ -57,28 +57,33 @@ let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
 
 function doGet() {
   console.log(jdfactorycode);
+  console.log(suburl("ddfactory",String(jdfactorycode)));
   if(jdfactorycode){
     return new Promise(resolve => {
-      $.get(suburl("ddfactory",jdfactorycode), async (err, resp, data) => {
+      try{
+        $.get(suburl("ddfactory",String(jdfactorycode)), async (err, resp, data) => {
 
-        console.log(resp);
-        if(err) {
-          console.log(`${JSON.stringify(err)}`)
-          console.log(`东东工厂助力码提交API请求失败`);
-        } else {
-          if(subGet(data)) {
-            data = JSON.parse(data);
-            if(data.code = 200) {
-              console.log(`东东工厂助力码提交成功`);
-            }else{
-              console.log(`东东工厂助力发提交失败  ${data}`);
+          console.log(resp);
+          if(err) {
+            console.log(`${JSON.stringify(err)}`)
+            console.log(`东东工厂助力码提交API请求失败`);
+          } else {
+            if(subGet(data)) {
+              data = JSON.parse(data);
+              if(data.code = 200) {
+                console.log(`东东工厂助力码提交成功`);
+              }else{
+                console.log(`东东工厂助力发提交失败  ${data}`);
+              }
             }
           }
-        }
-      })
+        })
+       } catch(e){
+        $.logErr(e, resp)
+       }
     })
   }else{
-    console.log(`京东工厂助力码为空,提交失败`);
+    console.log(`东东工厂助力码为空,提交失败`);
   }
 }
 function suburl(functionId,code) {
