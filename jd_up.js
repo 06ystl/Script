@@ -1,4 +1,4 @@
-const $ = new Env('京东');
+const $ = new Env('助力码提交');
 const urlSchema = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://h5.m.jd.com/babelDiy/Zeus/3KSjXqQabiTuD1cJ28QskrpWoBKT/index.html%22%20%7D`;
 const jxOpenUrl = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://wqsd.jd.com/pingou/dream_factory/index.html%22%20%7D`;
 
@@ -58,6 +58,7 @@ const nameArr = [`京东赚赚`,`东东工厂`,`京喜工厂`,`种豆得豆`,`�
           console.log(`[ ${nameArr[i]} ] 互助码 ${codeArr[i]}\n`)
         }
         for(let i = 0; i < codeArr.length; i++) {
+          await $.wait(1000);
           await subCode(i,urlArr[i],codeArr[i]);
         }
       }
@@ -81,6 +82,7 @@ const nameArr = [`京东赚赚`,`东东工厂`,`京喜工厂`,`种豆得豆`,`�
                     data = JSON.parse(data);
                     if(data.code = 200) {
                       console.log(`${nameArr[i]}助力码提交成功 ${JSON.stringify(data)}`);
+                      message += `${nameArr[i]}助力码提交成功`
                     }else{
                       console.log(`${nameArr[i]}助力发提交失败  ${data}`);
                     }
@@ -119,6 +121,11 @@ const nameArr = [`京东赚赚`,`东东工厂`,`京喜工厂`,`种豆得豆`,`�
     console.log(`东东工厂助力码为空,提交失败`);
   }
 }*/
+
+function showMsg() {
+  subTitle = `提交成功`;
+  $.msg($.name, subTitle, message);
+}
 function suburl(functionId,code) {
   return {
     url: `http://api.turinglabs.net/api/v1/jd/${functionId}/create/${code}`
