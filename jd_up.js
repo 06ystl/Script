@@ -52,14 +52,18 @@ const nameArr = [`京东赚赚`,`东东工厂`,`京喜工厂`,`种豆得豆`,`�
 
         for(let i = 0; i < codeArr.length; i++) {
           if (codeArr[i] === `0`){
-            console.log(`${nameArr[i]}未获取助力码`);
+            console.log(`${nameArr[i]}未获取助力码\n`);
             continue
           }
-          console.log(`[ ${nameArr[i]} ] 互助码 ${codeArr[i]}\n`)
+          console.log(`\n[ ${nameArr[i]} ] 互助码: ${codeArr[i]}\n`)
         }
         for(let i = 0; i < codeArr.length; i++) {
+          if (codeArr[i] === `0`){
+            continue
+          }
           await $.wait(1000);
           await subCode(i,urlArr[i],codeArr[i]);
+          await showMsg();
         }
       }
     }
@@ -84,7 +88,7 @@ const nameArr = [`京东赚赚`,`东东工厂`,`京喜工厂`,`种豆得豆`,`�
                       console.log(`${nameArr[i]}助力码提交成功 ${JSON.stringify(data)}`);
                       message += `${nameArr[i]}助力码提交成功`
                     }else{
-                      console.log(`${nameArr[i]}助力发提交失败  ${data}`);
+                      console.log(`${nameArr[i]}助力码提交失败 ${JSON.stringify(data)}`);
                     }
                   }
                 }
@@ -149,8 +153,6 @@ function suburl(functionId,code) {
                       if (item.taskType === 14) {
                         console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的东东工厂好友互助码】${item.assistTaskDetailVo.taskToken}\n`)
                         codeArr[1] = `${item.assistTaskDetailVo.taskToken}`;
-                      }else {
-                        console.log(`东东工厂获取互助码失败`);
                       }
                     })
                   }
@@ -159,6 +161,7 @@ function suburl(functionId,code) {
             } catch (e) {
               $.logErr(e, resp)
             } finally {
+              await $.wait(5000);
               resolve();
             }
           })
