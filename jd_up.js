@@ -1,5 +1,3 @@
-const { url } = require('inspector');
-
 const $ = new Env('京东');
 const urlSchema = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://h5.m.jd.com/babelDiy/Zeus/3KSjXqQabiTuD1cJ28QskrpWoBKT/index.html%22%20%7D`;
 const jxOpenUrl = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://wqsd.jd.com/pingou/dream_factory/index.html%22%20%7D`;
@@ -58,25 +56,29 @@ let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
       })
 
 function doGet() {
+  console.log(jdfactorycode);
   if(jdfactorycode){
-    $.get(suburl("ddfactory",jdfactorycode), async (err, resp, data) => {
+    return new Promise(resolve => {
+      $.get(suburl("ddfactory",jdfactorycode), async (err, resp, data) => {
 
-      console.log(resp);
-      if(err) {
-        console.log(`${JSON.stringify(err)}`)
-        console.log(`东东工厂助力码提交API请求失败`);
-      } else {
-        if(subGet(data)) {
-          data = JSON.parse(data);
-          if(data.code = 200) {
-            console.log(`东东工厂助力码提交成功`);
-          }else{
-            console.log(`东东工厂助力发提交失败  ${data}`);
+        console.log(resp);
+        if(err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`东东工厂助力码提交API请求失败`);
+        } else {
+          if(subGet(data)) {
+            data = JSON.parse(data);
+            if(data.code = 200) {
+              console.log(`东东工厂助力码提交成功`);
+            }else{
+              console.log(`东东工厂助力发提交失败  ${data}`);
+            }
           }
         }
-      }
-  })
-  console.log(`京东工厂助力码为空,提交失败`);
+      })
+    })
+  }else{
+    console.log(`京东工厂助力码为空,提交失败`);
   }
 }
 function suburl(functionId,code) {
