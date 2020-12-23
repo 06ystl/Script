@@ -37,6 +37,12 @@ const JX_API_HOST = 'https://m.jingxi.com';
         await jdFruit();
 
         await userInfo();
+
+        await getzzUserInfo();
+
+        await jdPet();
+
+        await jdPlantBean();
       }
     }
   })()
@@ -46,7 +52,51 @@ const JX_API_HOST = 'https://m.jingxi.com';
       .finally(() => {
         $.done();
       })
-
+      function jdfactory_getTaskDetail() {
+        return new Promise(resolve => {
+          $.post(taskPostUrl("jdfactory_getTaskDetail", {}, "jdfactory_getTaskDetail"), async (err, resp, data) => {
+            try {
+              if (err) {
+                console.log(`${JSON.stringify(err)}`)
+                console.log(`${$.name} API请求失败，请检查网路重试`)
+              } else {
+                if (safeGet(data)) {
+                  data = JSON.parse(data);
+                  if (data.data.bizCode === 0) {
+                    $.taskVos = data.data.result.taskVos;//任务列表
+                    $.taskVos.map(item => {
+                      if (item.taskType === 14) {
+                        console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的${$.name}东东工厂好友互助码】${item.assistTaskDetailVo.taskToken}\n`)
+                      }
+                    })
+                  }
+                }
+              }
+            } catch (e) {
+              $.logErr(e, resp)
+            } finally {
+              resolve();
+            }
+          })
+        })
+      }
+      function taskPostUrl(function_id, body = {}, function_id2) {
+        let url = `${JD_API_HOST}`;
+        if (function_id2) {
+          url += `?functionId=${function_id2}`;
+        }
+        return {
+          url,
+          body: `functionId=${function_id}&body=${escape(JSON.stringify(body))}&client=wh5&clientVersion=9.1.0`,
+          headers: {
+            "Cookie": cookie,
+            "origin": "https://h5.m.jd.com",
+            "referer": "https://h5.m.jd.com/",
+            'Content-Type': 'application/x-www-form-urlencoded',
+            "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0") : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
+          }
+        }
+      }
       async function jdFruit() {
         await initForFarm();
         if ($.farmInfo.farmUserPro) {
@@ -59,9 +109,45 @@ const JX_API_HOST = 'https://m.jingxi.com';
         }
       }
 
+      async function jdPlantBean() {
+        console.log(`获取任务及基本信息`)
+        await plantBeanIndex();
+        // console.log(plantBeanIndexResult.data.taskList);
+        if ($.plantBeanIndexResult.code === '0') {
+          const shareUrl = $.plantBeanIndexResult.data.jwordShareInfo.shareUrl
+          $.myPlantUuid = getParam(shareUrl, 'plantUuid')
+          console.log(`\n【您的${$.name}种豆得豆互助码】 ${$.myPlantUuid}\n`);
+
+        } else {
+          console.log(`种豆得豆-初始失败:  ${JSON.stringify($.plantBeanIndexResult)}`);
+        }
+      }
+      async function plantBeanIndex() {
+        $.plantBeanIndexResult = await beanrequest('plantBeanIndex');//plantBeanIndexBody
+      }
+      function beanrequest(function_id, body = {}){
+        return new Promise(async resolve => {
+          await $.wait(2000);
+          $.post(taskUrl(function_id, body), (err, resp, data) => {
+            try {
+              if (err) {
+                console.log('\n种豆得豆: API查询请求失败 ‼️‼️')
+                console.log(`function_id:${function_id}`)
+                $.logErr(err);
+              } else {
+                data = JSON.parse(data);
+              }
+            } catch (e) {
+              $.logErr(e, resp);
+            } finally {
+              resolve(data);
+            }
+          })
+        })
+      }
       function userInfo() {
         return new Promise(async resolve => {
-          $.get(taskurl('userinfo/GetUserInfo', `pin=&sharePin=&shareType=&materialTuanPin=&materialTuanId=`), async (err, resp, data) => {
+          $.get(dreamfactorytaskurl('userinfo/GetUserInfo', `pin=&sharePin=&shareType=&materialTuanPin=&materialTuanId=`), async (err, resp, data) => {
             try {
               if (err) {
                 console.log(`${JSON.stringify(err)}`)
@@ -87,7 +173,7 @@ const JX_API_HOST = 'https://m.jingxi.com';
           })
         })
       }
-      function taskurl(functionId, body = '') {
+      function dreamfactorytaskurl(functionId, body = '') {
         return {
           url: `${JX_API_HOST}/dreamfactory/${functionId}?zone=dream_factory&${body}&sceneval=2&g_login_type=1&_time=${Date.now()}&_=${Date.now()}`,
           headers: {
@@ -102,6 +188,99 @@ const JX_API_HOST = 'https://m.jingxi.com';
           }
         }
       }
+      function getzzUserInfo() {
+        return new Promise(resolve => {
+          $.get(zztaskUrl("interactIndex"), async (err, resp, data) => {
+            try {
+              if (err) {
+                console.log(`${JSON.stringify(err)}`)
+                console.log(`${$.name} API请求失败，请检查网路重试`)
+              } else {
+                if (safeGet(data)) {
+                  data = JSON.parse(data);
+                  if (data.data.shareTaskRes) {
+                    console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的${$.name}好友互助码】${data.data.shareTaskRes.itemId}\n`);
+                  } else {
+                    console.log(`已满5人助力,暂时看不到您的${$.name}好友助力码`)
+                  }
+                }
+              }
+            } catch (e) {
+              $.logErr(e, resp)
+            } finally {
+              resolve(data);
+            }
+          })
+        })
+      }
+      
+function zztaskUrl(functionId, body = {}) {
+  return {
+    url: `${JD_API_HOST}?functionId=${functionId}&body=${escape(JSON.stringify(body))}&client=wh5&clientVersion=9.1.0`,
+    headers: {
+      'Cookie': cookie,
+      'Host': 'api.m.jd.com',
+      'Connection': 'keep-alive',
+      'Content-Type': 'application/json',
+      'Referer': 'http://wq.jd.com/wxapp/pages/hd-interaction/index/index',
+      'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0") : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
+      'Accept-Language': 'zh-cn',
+      'Accept-Encoding': 'gzip, deflate, br',
+    }
+  }
+}
+async function jdPet() {
+  //查询jd宠物信息
+  const initPetTownRes = await petrequest('initPetTown');
+  message = `【京东账号${$.index}】${$.nickName}\n`;
+  if (initPetTownRes.code === '0' && initPetTownRes.resultCode === '0' && initPetTownRes.message === 'success') {
+    $.petInfo = initPetTownRes.result;
+    if ($.petInfo.userStatus === 0) {
+      $.msg($.name, '', `【提示】京东账号${$.index}${$.nickName}\n萌宠活动未开启\n请手动去京东APP开启活动\n入口：我的->游戏与互动->查看更多开启`, { "open-url": "openapp.jdmoble://" });
+      return
+    }
+    console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的${$.name}好友互助码】${$.petInfo.shareCode}\n`);
+
+
+  } else if (initPetTownRes.code === '0'){
+    console.log(`初始化萌宠失败:  ${initPetTownRes.message}`);
+  }
+  async function petrequest(function_id, body = {}) {
+    await $.wait(3000); //歇口气儿, 不然会报操作频繁
+    return new Promise((resolve, reject) => {
+      $.post(pettaskUrl(function_id, body), (err, resp, data) => {
+        try {
+          if (err) {
+            console.log('\n东东萌宠: API查询请求失败 ‼️‼️');
+            console.log(JSON.stringify(err));
+            $.logErr(err);
+          } else {
+            data = JSON.parse(data);
+          }
+        } catch (e) {
+          $.logErr(e, resp);
+        } finally {
+          resolve(data)
+        }
+      })
+    })
+  }
+
+  function pettaskUrl(function_id, body = {}) {
+    body["version"] = 2;
+    body["channel"] = 'app';
+    return {
+      url: `${JD_API_HOST}?functionId=${function_id}`,
+      body: `body=${escape(JSON.stringify(body))}&appid=wh5&loginWQBiz=pet-town&clientVersion=9.0.4`,
+      headers: {
+        'Cookie': cookie,
+        'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0") : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
+        'Host': 'api.m.jd.com',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }
+    };
+  }
+}
       async function initForFarm() {
         return new Promise(resolve => {
           const option =  {
