@@ -43,6 +43,8 @@ const JX_API_HOST = 'https://m.jingxi.com';
         await jdPet();
 
         await jdPlantBean();
+
+        await jdfactory_getTaskDetail();
       }
     }
   })()
@@ -110,7 +112,6 @@ const JX_API_HOST = 'https://m.jingxi.com';
       }
 
       async function jdPlantBean() {
-        console.log(`获取任务及基本信息`)
         await plantBeanIndex();
         // console.log(plantBeanIndexResult.data.taskList);
         if ($.plantBeanIndexResult.code === '0') {
@@ -128,7 +129,7 @@ const JX_API_HOST = 'https://m.jingxi.com';
       function beanrequest(function_id, body = {}){
         return new Promise(async resolve => {
           await $.wait(2000);
-          $.post(taskUrl(function_id, body), (err, resp, data) => {
+          $.post(beantaskUrl(function_id, body), (err, resp, data) => {
             try {
               if (err) {
                 console.log('\n种豆得豆: API查询请求失败 ‼️‼️')
@@ -144,6 +145,25 @@ const JX_API_HOST = 'https://m.jingxi.com';
             }
           })
         })
+      }
+      function beantaskUrl(function_id, body) {
+        body["version"] = "9.0.0.1";
+        body["monitor_source"] = "plant_app_plant_index";
+        body["monitor_refer"] = "";
+        return {
+          url: JD_API_HOST,
+          body: `functionId=${function_id}&body=${escape(JSON.stringify(body))}&appid=ld&client=apple&area=5_274_49707_49973&build=167283&clientVersion=9.1.0`,
+          headers: {
+            'Cookie': cookie,
+            'Host': 'api.m.jd.com',
+            'Accept': '*/*',
+            'Connection': 'keep-alive',
+            'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0") : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
+            'Accept-Language': 'zh-Hans-CN;q=1,en-CN;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Content-Type': "application/x-www-form-urlencoded"
+          }
+        }
       }
       function userInfo() {
         return new Promise(async resolve => {
@@ -199,7 +219,7 @@ const JX_API_HOST = 'https://m.jingxi.com';
                 if (safeGet(data)) {
                   data = JSON.parse(data);
                   if (data.data.shareTaskRes) {
-                    console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的${$.name}好友互助码】${data.data.shareTaskRes.itemId}\n`);
+                    console.log(`\n【京东账号${$.index}（${$.nickName || $.UserName}）的京东赚赚好友互助码】${data.data.shareTaskRes.itemId}\n`);
                   } else {
                     console.log(`已满5人助力,暂时看不到您的${$.name}好友助力码`)
                   }
@@ -232,7 +252,6 @@ function zztaskUrl(functionId, body = {}) {
 async function jdPet() {
   //查询jd宠物信息
   const initPetTownRes = await petrequest('initPetTown');
-  message = `【京东账号${$.index}】${$.nickName}\n`;
   if (initPetTownRes.code === '0' && initPetTownRes.resultCode === '0' && initPetTownRes.message === 'success') {
     $.petInfo = initPetTownRes.result;
     if ($.petInfo.userStatus === 0) {
