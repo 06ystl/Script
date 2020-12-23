@@ -57,24 +57,21 @@ let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
 
 function doGet() {
   if(jdfactorycode){
-        console.log(`${suburl("ddfactory",String(jdfactorycode))}`);
+        console.log(`${JSON.stringify(suburl("ddfactory",String(jdfactorycode)))}`);
         $.get(suburl("ddfactory",String(jdfactorycode)), async (err, resp, data) => {
-
-          console.log(resp);
-          if(err) {
-            console.log(`${JSON.stringify(err)}`)
-            console.log(`东东工厂助力码提交API请求失败`);
-          } else {
-
-            if(subGet(data)) {
-              data = JSON.parse(data);
-              if(data.code = 200) {
-                console.log(`东东工厂助力码提交成功`);
-              }else{
-                console.log(`东东工厂助力发提交失败  ${data}`);
-              }
-            }
+        if(err) {
+          console.log(`${JSON.stringify(err)}`)
+          console.log(`东东工厂助力码提交API请求失败`);
+        } else {
+          console.log(`${JSON.stringify(data)}`)
+          data = JSON.parse(data);
+          if(data.code = 200) {
+            console.log(`东东工厂助力码提交成功`);
+          }else{
+            console.log(`东东工厂助力发提交失败  ${data}`);
           }
+          
+        }
         })
   }else{
     console.log(`东东工厂助力码为空,提交失败`);
