@@ -44,7 +44,7 @@ let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
        // await jdPlantBean();//种豆得豆
         //await jdFruit();//东东农场
         //await jdPet();//萌宠
-        await doGet();
+        doGet();
       }
     }
   })()
