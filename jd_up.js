@@ -39,20 +39,25 @@ const nameArr = [`京东赚赚`,`东东工厂`,`京喜工厂`,`种豆得豆`,`�
         subTitle = '';
         option = {};
         await jdzz();//京东赚赚
+        await $.wait(500);
         await jdfactory();//东东工厂
+        await $.wait(500);
         await jxfactory();//京喜工厂
+        await $.wait(500);
         await jdPlantBean();//种豆得豆
+        await $.wait(500);
         await jdFruit();//东东农场
+        await $.wait(500);
         await jdPet();//萌宠
 
         for(let i = 0; i < codeArr.length; i++) {
-          console.log(`${codeArr[i]}\n`)
-        }
-        for(let i = 0; i < codeArr.length; i++) {
           if (codeArr[i] === `0`){
-            console.log(`${nameArr[i]}获取助力码失败`);
+            console.log(`${nameArr[i]}未获取助力码`);
             continue
           }
+          console.log(`[ ${nameArr[i]} ] 互助码 ${codeArr[i]}\n`)
+        }
+        for(let i = 0; i < codeArr.length; i++) {
           await subCode(i,urlArr[i],codeArr[i]);
         }
       }
@@ -75,7 +80,7 @@ const nameArr = [`京东赚赚`,`东东工厂`,`京喜工厂`,`种豆得豆`,`�
                   if (data) {                  
                     data = JSON.parse(data);
                     if(data.code = 200) {
-                      console.log(`${nameArr[i]}助力码提交成功  ${data}`);
+                      console.log(`${nameArr[i]}助力码提交成功 ${JSON.stringify(data)}`);
                     }else{
                       console.log(`${nameArr[i]}助力发提交失败  ${data}`);
                     }
