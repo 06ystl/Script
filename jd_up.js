@@ -30,7 +30,6 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
         message = '';
         subTitle = '';
         option = {};
-        await shareCodesFormat();
         await jdFruit();
       }
     }
