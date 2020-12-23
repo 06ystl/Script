@@ -8,7 +8,7 @@ let cookiesArr = [], cookie = '', notify;
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 const JX_API_HOST = 'https://m.jingxi.com';
 
-const jdfactorycode,jxfactorycode, petcode,furitcode,beancode,zzcode ;
+let jdfactorycode ,jxfactorycode, petcode,furitcode,beancode,zzcode ;
 let codeArr = [];
 let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
 
