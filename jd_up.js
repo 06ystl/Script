@@ -7,7 +7,7 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
 const JX_API_HOST = 'https://m.jingxi.com';
 
 let jdfactorycode ,jxfactorycode, petcode,furitcode,beancode,zzcode ;
-let codeArr = [];
+let codeArr = [0,0,0,0,0];
 let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
 const nameArr = ["京东赚赚","东东工厂","京喜工厂","种豆得豆","东东农场","东东萌宠"]
 !(async () => {
@@ -44,6 +44,7 @@ const nameArr = ["京东赚赚","东东工厂","京喜工厂","种豆得豆","�
         await jdPlantBean();//种豆得豆
         await jdFruit();//东东农场
         await jdPet();//萌宠
+        $.wait(5000);
         await subCode();
       }
     }
@@ -59,34 +60,34 @@ const nameArr = ["京东赚赚","东东工厂","京喜工厂","种豆得豆","�
           if(codeArr[i] === 0 ) {
             console.log(`${nameArr[i]} 助力码无法获取`);
             continue;
-          }
-          return new Promise(async resolve => {
-            $.get({url: `http://api.turinglabs.net/api/v1/jd/${urlArr[i]}/create/${codeArr[i]}/`}, (err, resp, data) => {
-              try {
-                if (err) {
-                  console.log(`${JSON.stringify(err)}`)
-                  console.log(`助力码服务器 API请求失败，请检查网路重试`)
-                } else {
-                  if (data) {                  
-                    data = JSON.parse(data);
-                    if(data.code = 200) {
-                      console.log(`${nameArr[i]}助力码提交成功  ${data}`);
-                    }else{
-                      console.log(`${nameArr[i]}助力发提交失败  ${data}`);
+          }else {
+            new Promise(async resolve => {
+              $.get({url: `http://api.turinglabs.net/api/v1/jd/${urlArr[i]}/create/${codeArr[i]}/`}, (err, resp, data) => {
+                try {
+                  if (err) {
+                    console.log(`${JSON.stringify(err)}`)
+                    console.log(`助力码服务器 API请求失败，请检查网路重试`)
+                  } else {
+                    if (data) {                  
+                      data = JSON.parse(data);
+                      if(data.code = 200) {
+                        console.log(`${nameArr[i]}助力码提交成功  ${data}`);
+                      }else{
+                        console.log(`${nameArr[i]}助力发提交失败  ${data}`);
+                      }
                     }
                   }
+                } catch (e) {
+                  $.logErr(e, resp)
+                } finally {
+                  resolve(data);
                 }
-              } catch (e) {
-                $.logErr(e, resp)
-              } finally {
-                resolve(data);
-              }
+              })
+              await $.wait(5000);
+              resolve()
             })
-            await $.wait(5000);
-            resolve()
-          })
+          }
         }
-        
       }
 /*function doGet() {
   if(jdfactorycode){
