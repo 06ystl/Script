@@ -63,8 +63,10 @@ const nameArr = [`京东赚赚`,`东东工厂`,`京喜工厂`,`种豆得豆`,`�
           }
           await $.wait(1000);
           await subCode(i,urlArr[i],codeArr[i]);
-          await showMsg();
+          
         }
+
+        await showMsg();
       }
     }
   })()
