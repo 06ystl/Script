@@ -44,7 +44,7 @@ let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
        // await jdPlantBean();//种豆得豆
         //await jdFruit();//东东农场
         //await jdPet();//萌宠
-        doGet();
+        await readShareCode();
       }
     }
   })()
@@ -54,8 +54,34 @@ let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
       .finally(() => {
         $.done();
       })
-
-function doGet() {
+      async function readShareCode() {
+        return new Promise(async resolve => {
+          $.get({url: `http://api.turinglabs.net/api/v1/jd/ddfactory/create/${jdfactorycode}/`}, (err, resp, data) => {
+            try {
+              if (err) {
+                console.log(`${JSON.stringify(err)}`)
+                console.log(`${$.name} API请求失败，请检查网路重试`)
+              } else {
+                if (data) {                  
+                  data = JSON.parse(data);
+                  if(data.code = 200) {
+                    console.log(`东东工厂助力码提交成功`);
+                  }else{
+                    console.log(`东东工厂助力发提交失败  ${data}`);
+                  }
+                }
+              }
+            } catch (e) {
+              $.logErr(e, resp)
+            } finally {
+              resolve(data);
+            }
+          })
+          await $.wait(5000);
+          resolve()
+        })
+      }
+/*function doGet() {
   if(jdfactorycode){
         $.get({url: `http://api.turinglabs.net/api/v1/jd/ddfactory/create/${jdfactorycode}`}, async (err, resp, data) => {
         if(err) {
@@ -75,7 +101,7 @@ function doGet() {
   }else{
     console.log(`东东工厂助力码为空,提交失败`);
   }
-}
+}*/
 function suburl(functionId,code) {
   return {
     url: `http://api.turinglabs.net/api/v1/jd/${functionId}/create/${code}`
@@ -83,7 +109,7 @@ function suburl(functionId,code) {
 }
 
 
-      function jdfactory() {
+     async function jdfactory() {
         return new Promise(resolve => {
           $.post(taskPostUrl("jdfactory_getTaskDetail", {}, "jdfactory_getTaskDetail"), async (err, resp, data) => {
             try {
@@ -213,7 +239,7 @@ function suburl(functionId,code) {
           }
         }
       }
-      function jxfactory() {
+     async function jxfactory() {
         return new Promise(async resolve => {
           $.get(dreamfactorytaskurl('userinfo/GetUserInfo', `pin=&sharePin=&shareType=&materialTuanPin=&materialTuanId=`), async (err, resp, data) => {
             try {
@@ -260,7 +286,7 @@ function suburl(functionId,code) {
           }
         }
       }
-      function jdzz() {
+     async function jdzz() {
         return new Promise(resolve => {
           $.get(zztaskUrl("interactIndex"), async (err, resp, data) => {
             try {
