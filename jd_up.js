@@ -57,8 +57,7 @@ let urlArr = ["jdzz","ddfactory","jxfactory","bean","farm","pet"];
 
 function doGet() {
   if(jdfactorycode){
-        console.log(`${JSON.stringify(suburl("ddfactory",String(jdfactorycode)))}`);
-        $.get(suburl("ddfactory",String(jdfactorycode)), async (err, resp, data) => {
+        $.get({url: `http://api.turinglabs.net/api/v1/jd/ddfactory/create/${jdfactorycode}`}, async (err, resp, data) => {
         if(err) {
           console.log(`${JSON.stringify(err)}`)
           console.log(`东东工厂助力码提交API请求失败`);
