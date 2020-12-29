@@ -6,7 +6,7 @@ name: 中青自动阅读
 on:
   workflow_dispatch:
   schedule:
-     - cron: '*/10 * * * *'
+    - cron: '0 1-12 * * *'
   watch:
     types: started
 jobs:
@@ -15,6 +15,8 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id
     env:
       YOUTH_READ: ${{ secrets.YOUTH_READ }}
+      YOUTH_READ2: ${{ secrets.YOUTH_READ2 }}
+      YOUTH_READ3: ${{ secrets.YOUTH_READ3 }}
     steps:
       - name: Checkout
         run: |
@@ -35,3 +37,17 @@ jobs:
           node Task/Youth_Read.js
         env:
           YOUTH_READ: ${{ secrets.YOUTH_READ }}
+      - name: '运行 【中青看点自动阅读二】'
+        if: env.YOUTH_READ
+        run: |
+          cd ~/Script
+          node Task/Youth_Read.js
+        env:
+          YOUTH_READ: ${{ secrets.YOUTH_READ2 }}
+      - name: '运行 【中青看点自动阅读三】'
+        if: env.YOUTH_READ
+        run: |
+          cd ~/Script
+          node Task/Youth_Read.js
+        env:
+          YOUTH_READ: ${{ secrets.YOUTH_READ3 }}
