@@ -25,6 +25,7 @@ jobs:
           node-version: 12.x
       - name: npm install
         run: |
+          cd ~/Script
           npm install
           
       - name: '运行 【中青看点自动阅读一】'
