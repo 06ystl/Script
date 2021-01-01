@@ -62,7 +62,7 @@ const nameArr = [`京东赚赚`,`东东工厂`,`京喜工厂`,`种豆得豆`,`�
           if (codeArr[i] === `0`){
             continue
           }
-          await $.wait(1000);
+          await $.wait(5000);
           await subCode(i,urlArr[i],codeArr[i]);
           
         }
@@ -79,7 +79,13 @@ const nameArr = [`京东赚赚`,`东东工厂`,`京喜工厂`,`种豆得豆`,`�
       })
       async function subCode(i,url,code) {
           return new Promise(async resolve => {
-            $.get({url: `http://api.turinglabs.net/api/v1/jd/${url}/create/${code}/`}, (err, resp, data) => {
+          	let getUrl = ``; 
+          	if (i == 0) {
+          		getUrl = `https://code.chiang.fun/api/v1/jd/${url}/create/${code}/`
+          	}else{
+          		getUrl = `http://api.turinglabs.net/api/v1/jd/${url}/create/${code}/`;
+          	}
+            $.get({url: getUrl}, (err, resp, data) => {
               try {
                 if (err) {
                   console.log(`${JSON.stringify(err)}`)
@@ -138,7 +144,6 @@ function suburl(functionId,code) {
     url: `http://api.turinglabs.net/api/v1/jd/${functionId}/create/${code}`
   }
 }
-
 
      async function jdfactory() {
         return new Promise(resolve => {
