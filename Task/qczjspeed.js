@@ -622,7 +622,7 @@ function coin(timeout = 0) {
       let url = {
         url:`https://mobile.app.autohome.com.cn/speedgrow_v1.0.0/taskcenter/init/coin`,
         headers: JSON.parse(GetUserInfoheaderVal),
-		body: coinbodyVal,
+		    body: coinbodyVal,
       }
       $.post(url, async(err, resp, data) => {
         try {
@@ -865,10 +865,12 @@ function reportAss(timeout = 0) {
       }
       $.post(url, async(err, resp, data) => {
         try {
+          $.log(addCoin2bodyVal);
           if (logs) $.log(`${$.name}, 助力任务🚩: ${data}`);
           $.reportAss = JSON.parse(data);
 if($.reportAss.data==0)
   $.message +='【助力任务】：助力成功\n';  
+
         } catch (e) {
           $.logErr(e, resp);
         } finally {
