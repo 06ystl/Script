@@ -52,7 +52,7 @@ jobs:
           node Task/Youth_Read.js
         env:
           YOUTH_READ: ${{ secrets.YOUTH_READ3 }}
-      - name: '运行 【中青看点自动阅读三】'
+      - name: '运行 【中青看点自动阅读四】'
         if: env.YOUTH_READ
         run: |
           cd ~/Script
