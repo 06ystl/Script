@@ -169,6 +169,8 @@ async function joyReward() {
   }
 }
 function getExchangeRewards() {
+    
+  return new Promise((resolve) => {
     let opt = {
         url: "//jdjoy.jd.com/gift/getHomeInfo",
         // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5",
@@ -178,7 +180,7 @@ function getExchangeRewards() {
         header: {"content-type": "application/json"}
       }
     const url = "https:"+ taroRequest(opt)['url']
-  return new Promise((resolve) => {
+    console.log(url+'\n');
     const option = {
       url,
       headers: {
