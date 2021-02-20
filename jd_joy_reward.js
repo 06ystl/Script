@@ -172,7 +172,7 @@ function getExchangeRewards() {
     
   return new Promise((resolve) => {
     let opt = {
-        url: "//jdjoy.jd.com/gift/getHomeInfo",
+        url: "//jdjoy.jd.com/common/gift/getHomeInfo",
         // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5",
         method: "GET",
         data: {},
@@ -180,7 +180,6 @@ function getExchangeRewards() {
         header: {"content-type": "application/json"}
       }
     const url = "https:"+ taroRequest(opt)['url']
-    console.log(url+'\n');
     const option = {
       url,
       headers: {
@@ -194,7 +193,7 @@ function getExchangeRewards() {
         "Referer": "https://jdjoy.jd.com/pet/index",
         "Accept-Language": "zh-cn",
         "Accept-Encoding": "gzip, deflate, br"
-      },
+      }
     }
     $.get(option, (err, resp, data) => {
       try {
@@ -203,7 +202,6 @@ function getExchangeRewards() {
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
           $.getExchangeRewardsRes = {};
-          console.log(JSON.parse(data));
           if (safeGet(data)) {
             $.getExchangeRewardsRes = JSON.parse(data);
           }
@@ -239,8 +237,17 @@ function exchange(saleInfoId, orderSource) {
         "sdkToken": ""
       }
     }
+    let opt = {
+        url: "//jdjoy.jd.com/common/gift/new/exchange?reqSource=h5",
+        // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5",
+        method: "GET",
+        data: {},
+        credentials: "include",
+        header: {"content-type": "application/json"}
+      }
+    const url = "https:"+ taroRequest(opt)['url']
     const option = {
-      url: `${JD_API_HOST}/gift/new/exchange?reqSource=h5`,
+      url,
       body: `${JSON.stringify(body)}`,
       headers: {
         "Host": "jdjoy.jd.com",
