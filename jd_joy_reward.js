@@ -219,8 +219,8 @@ function exchange(saleInfoId, orderSource) {
     const body = {
       "buyParam": { saleInfoId, orderSource },
       "deviceInfo": {
-        "eid": "",
-        "fp": "",
+        "eid": "42OSNYY5ZDXS37RN5HI7XIQ4RRCNE4XHXOVFLDES7FKI62CDPYIBRFU4ECOA7J6F4SCWOJQPRNXRL7AU2QQGAWA3AE",
+        "fp": "b8750da39d2f86b72e15ac877ee92247",
         "deviceType": "",
         "macAddress": "",
         "imei": "",
@@ -238,16 +238,17 @@ function exchange(saleInfoId, orderSource) {
       }
     }
     let opt = {
-        url: "//jdjoy.jd.com/common/gift/new/exchange?reqSource=h5",
+        url: "//jdjoy.jd.com/common/gift/new/exchange",
         // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5",
-        method: "GET",
+        method: "POST",
         data: {},
         credentials: "include",
         header: {"content-type": "application/json"}
       }
     const url = "https:"+ taroRequest(opt)['url']
+    console.log(url);
     const option = {
-      url,
+      url: url,
       body: `${JSON.stringify(body)}`,
       headers: {
         "Host": "jdjoy.jd.com",
