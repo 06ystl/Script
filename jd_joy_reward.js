@@ -219,8 +219,8 @@ function exchange(saleInfoId, orderSource) {
     const body = {
       "buyParam": { saleInfoId, orderSource },
       "deviceInfo": {
-        "eid": "42OSNYY5ZDXS37RN5HI7XIQ4RRCNE4XHXOVFLDES7FKI62CDPYIBRFU4ECOA7J6F4SCWOJQPRNXRL7AU2QQGAWA3AE",
-        "fp": "b8750da39d2f86b72e15ac877ee92247",
+        "eid": "",
+        "fp": "",
         "deviceType": "",
         "macAddress": "",
         "imei": "",
@@ -238,10 +238,11 @@ function exchange(saleInfoId, orderSource) {
       }
     }
     let opt = {
+        //jdjoy.jd.com/common/gift/getHomeInfo
         url: "//jdjoy.jd.com/common/gift/new/exchange",
         // url: "//draw.jdfcloud.com/common/pet/getPetTaskConfig?reqSource=h5",
         method: "POST",
-        data: {},
+        data: body,
         credentials: "include",
         header: {"content-type": "application/json"}
       }
