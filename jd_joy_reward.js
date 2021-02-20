@@ -201,6 +201,7 @@ function getExchangeRewards() {
           console.log(`${$.name} API请求失败，请检查网路重试`)
         } else {
           $.getExchangeRewardsRes = {};
+          console.log(JSON.parse(data));
           if (safeGet(data)) {
             $.getExchangeRewardsRes = JSON.parse(data);
           }
