@@ -1,3 +1,5 @@
+let url = $request.url
+console.log(url)
 let body = {
   "success": true,
   "response": {
